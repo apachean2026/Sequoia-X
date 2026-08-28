@@ -38,8 +38,8 @@ jobs:
       - name: ⑥ 创建数据目录
         run: mkdir -p data
 
-      - name: ⑦ 运行 Sequoia-X
-        run: uv run python main.py
+      - name: ⑦ 首次历史数据回填
+        run: uv run python main.py --backfill
 
       - name: ⑧ 保存数据库
         if: always()
