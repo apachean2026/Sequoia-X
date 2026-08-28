@@ -1,14 +1,7 @@
-.github
-  └── workflows
-      └── sequoia-x.yml
 name: Sequoia-X 每日选股
 
 on:
   workflow_dispatch:
-  schedule:
-    # 每个工作日北京时间 19:30
-    # GitHub Actions 使用 UTC，所以北京时间减 8 小时
-    - cron: "30 11 * * 1-5"
 
 permissions:
   contents: read
@@ -18,46 +11,41 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1. 下载代码
-      - name: Checkout
+      - name: ① 下载 Sequoia-X 代码
         uses: actions/checkout@v4
 
-      # 2. 安装 Python
-      - name: Setup Python
+      - name: ② 安装 Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
 
-      # 3. 安装 uv
-      - name: Install uv
+      - name: ③ 安装 uv
         uses: astral-sh/setup-uv@v6
         with:
           enable-cache: true
 
-      # 4. 安装项目依赖
-      - name: Install dependencies
+      - name: ④ 安装项目依赖
         run: uv sync
 
-      # 5. 创建 .env
-      - name: Create environment file
+      - name: ⑤ 创建 .env 配置文件
         run: |
-          cat > .env << EOF
+          cat > .env << 'EOF'
+          DB_PATH=data/sequoia_v2.db
+          START_DATE=2024-01-01
           FEISHU_WEBHOOK_URL=${{ secrets.FEISHU_WEBHOOK_URL }}
           EOF
 
-      # 6. 运行 Sequoia-X
-      - name: Run Sequoia-X
-        run: |
-          uv run python main.py
+      - name: ⑥ 创建数据目录
+        run: mkdir -p data
 
-      # 7. 保存数据库和日志
-      - name: Upload database and logs
+      - name: ⑦ 运行 Sequoia-X
+        run: uv run python main.py
+
+      - name: ⑧ 保存数据库
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: sequoia-x-data-${{ github.run_number }}
-          path: |
-            data/
-            *.log
+          name: sequoia-x-data
+          path: data/
           if-no-files-found: ignore
           retention-days: 7
