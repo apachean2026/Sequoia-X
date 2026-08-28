@@ -1,0 +1,57 @@
+name: 测试 Baostock
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: ① 下载代码
+        uses: actions/checkout@v4
+
+      - name: ② 安装 Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: ③ 安装 Baostock
+        run: pip install baostock
+
+      - name: ④ 测试 Baostock
+        run: |
+          python - <<'PY'
+          import baostock as bs
+
+          print("开始连接 Baostock...")
+
+          lg = bs.login()
+
+          print("login error_code:", lg.error_code)
+          print("login error_msg:", lg.error_msg)
+
+          if lg.error_code != "0":
+              raise SystemExit("Baostock 登录失败")
+
+          print("开始获取股票列表...")
+
+          rs = bs.query_stock_basic()
+
+          print("query error_code:", rs.error_code)
+          print("query error_msg:", rs.error_msg)
+
+          count = 0
+
+          while rs.error_code == "0" and rs.next():
+              count += 1
+              if count <= 5:
+                  print(rs.get_row_data())
+
+          print("获取股票数量:", count)
+
+          bs.logout()
+
+          if count == 0:
+              raise SystemExit("Baostock 没有返回股票数据")
+          PY
