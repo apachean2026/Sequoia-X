@@ -1,0 +1,51 @@
+name: Sequoia-X 每日选股
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  run-sequoia:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: ① 下载 Sequoia-X 代码
+        uses: actions/checkout@v4
+
+      - name: ② 安装 Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: ③ 安装 uv
+        uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+
+      - name: ④ 安装项目依赖
+        run: uv sync
+
+      - name: ⑤ 创建 .env 配置文件
+        run: |
+          cat > .env << 'EOF'
+          DB_PATH=data/sequoia_v2.db
+          START_DATE=2024-01-01
+          FEISHU_WEBHOOK_URL=${{ secrets.FEISHU_WEBHOOK_URL }}
+          EOF
+
+      - name: ⑥ 创建数据目录
+        run: mkdir -p data
+
+      - name: ⑦ 运行 Sequoia-X
+        run: uv run python main.py
+
+      - name: ⑧ 保存数据库
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sequoia-x-data
+          path: data/
+          if-no-files-found: ignore
+          retention-days: 7
