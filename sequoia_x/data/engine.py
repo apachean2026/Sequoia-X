@@ -99,7 +99,14 @@ class DataEngine:
         from datetime import date, timedelta
         from multiprocessing import Pool
 
-        today_str = date.today().strftime("%Y-%m-%d")
+        today = date.today()
+
+        # 周六、周日不进行行情同步
+        if today.weekday() >= 5:
+            logger.info(f"今天是非交易日 {today}，跳过行情同步")
+            return 0
+
+        today_str = today.strftime("%Y-%m-%d")
 
         tasks = []
         with sqlite3.connect(self.db_path) as conn:
