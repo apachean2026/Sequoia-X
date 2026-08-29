@@ -2,6 +2,8 @@ name: Sequoia-X 每日选股
 
 on:
   workflow_dispatch:
+  schedule:
+    - cron: "30 15 * * 1-5"
 
 permissions:
   contents: read
@@ -27,7 +29,20 @@ jobs:
       - name: ④ 安装项目依赖
         run: uv sync
 
-      - name: ⑤ 创建 .env 配置文件
+      - name: ⑤ 创建数据目录
+        run: mkdir -p data
+
+      - name: ⑥ 下载历史数据库
+        run: |
+          curl -L \
+            -o data/sequoia_v2.db \
+            https://github.com/apachean2026/Sequoia-X/releases/download/v1.0.0-data/sequoia_v2.db
+
+      - name: ⑦ 检查数据库
+        run: |
+          ls -lh data/sequoia_v2.db
+
+      - name: ⑧ 创建 .env 配置文件
         run: |
           cat > .env << 'EOF'
           DB_PATH=data/sequoia_v2.db
@@ -35,17 +50,5 @@ jobs:
           FEISHU_WEBHOOK_URL=${{ secrets.FEISHU_WEBHOOK_URL }}
           EOF
 
-      - name: ⑥ 创建数据目录
-        run: mkdir -p data
-
-      - name: ⑦ 首次历史数据回填
-        run: uv run python main.py --backfill
-
-      - name: ⑧ 保存数据库
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: sequoia-x-data
-          path: data/
-          if-no-files-found: ignore
-          retention-days: 7
+      - name: ⑨ 执行每日选股
+        run: uv run python main.py
