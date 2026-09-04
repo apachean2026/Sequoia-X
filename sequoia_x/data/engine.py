@@ -1,4 +1,3 @@
-```python
 """数据引擎模块：负责 SQLite 行情数据存储与 baostock 增量同步。"""
 
 import sqlite3
@@ -1240,4 +1239,3 @@ class DataEngine:
             row[0]
             for row in rows
         ]
-```
