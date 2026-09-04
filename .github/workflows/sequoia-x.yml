@@ -3,6 +3,8 @@ name: Sequoia-X 每日选股
 on:
   workflow_dispatch:
   schedule:
+    # 北京时间周一至周五 18:30
+    # GitHub Actions 使用 UTC：18:30 北京时间 = 10:30 UTC
     - cron: "30 10 * * 1-5"
 
 permissions:
@@ -34,7 +36,7 @@ jobs:
 
       - name: ⑥ 下载历史数据库
         run: |
-          curl -L \
+          curl -L --fail \
             -o data/sequoia_v2.db \
             https://github.com/apachean2026/Sequoia-X/releases/download/v1.0.0-data/sequoia_v2.db
 
