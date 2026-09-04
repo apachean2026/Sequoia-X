@@ -3,7 +3,7 @@ name: Sequoia-X 每日选股
 on:
   workflow_dispatch:
   schedule:
-    - cron: "30 15 * * 1-5"
+    - cron: "30 10 * * 1-5"
 
 permissions:
   contents: read
