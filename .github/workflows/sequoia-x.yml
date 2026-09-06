@@ -53,7 +53,7 @@ jobs:
           EOF
 
       - name: ⑨ 测试 Alpha158 数据集
-        run: uv run python sequoia_x/ml/test_dataset.py
+        run: uv run python -m sequoia_x.ml.test_dataset
 
       - name: ⑩ 执行每日选股
         run: uv run python main.py
