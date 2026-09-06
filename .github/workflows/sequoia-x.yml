@@ -58,5 +58,8 @@ jobs:
       - name: ⑩ 测试 LightGBM 模型训练
         run: uv run python -m sequoia_x.ml.trainer
 
+      - name: ⑪ 测试 AI TOP10 预测
+        run: uv run python -m sequoia_x.ml.predict
+
       - name: ⑪ 执行每日选股
         run: uv run python main.py
