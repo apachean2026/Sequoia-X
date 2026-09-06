@@ -55,5 +55,8 @@ jobs:
       - name: ⑨ 测试 Alpha158 数据集
         run: uv run python -m sequoia_x.ml.test_dataset
 
-      - name: ⑩ 执行每日选股
+      - name: ⑩ 测试 LightGBM 模型训练
+        run: uv run python -m sequoia_x.ml.trainer
+
+      - name: ⑪ 执行每日选股
         run: uv run python main.py
