@@ -277,7 +277,7 @@ def main() -> None:
 
     result = predict_top_stocks(
         engine,
-        max_stocks=100,
+        max_stocks=500,
         top_k=10,
     )
 
