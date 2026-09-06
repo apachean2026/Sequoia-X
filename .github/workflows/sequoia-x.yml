@@ -52,5 +52,8 @@ jobs:
           FEISHU_WEBHOOK_URL=${{ secrets.FEISHU_WEBHOOK_URL }}
           EOF
 
-      - name: ⑨ 执行每日选股
+      - name: ⑨ 测试 Alpha158 数据集
+        run: uv run python sequoia_x/ml/test_dataset.py
+
+      - name: ⑩ 执行每日选股
         run: uv run python main.py
