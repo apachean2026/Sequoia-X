@@ -287,7 +287,7 @@ if __name__ == "__main__":
 
     result = train_model(
         engine,
-        max_stocks=20,
+        max_stocks=500,
     )
 
     print()
