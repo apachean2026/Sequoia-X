@@ -9,6 +9,7 @@ dependencies = [
     "python-dotenv>=1.0",
     "rich>=13.0",
     "pandas>=2.0",
+    "lightgbm>=4.0",
     "requests>=2.31",
 ]
 
