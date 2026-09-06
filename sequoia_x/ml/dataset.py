@@ -1,4 +1,3 @@
-```python
 """LightGBM 训练数据集构建。
 
 功能：
@@ -197,4 +196,3 @@ def prepare_lightgbm_data(
         y,
         feature_columns,
     )
-```
