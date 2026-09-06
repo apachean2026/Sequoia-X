@@ -15,11 +15,12 @@ from pathlib import Path
 import lightgbm as lgb
 import pandas as pd
 
+from sequoia_x.core.config import get_settings
+from sequoia_x.data.engine import DataEngine
 from sequoia_x.ml.dataset import (
     build_training_dataset,
     prepare_lightgbm_data,
 )
-from sequoia_x.data.engine import DataEngine
 
 
 logger = logging.getLogger(__name__)
@@ -141,7 +142,11 @@ def train_model(
         errors="coerce",
     )
 
-    sort_index = data_for_split["date"].sort_values().index
+    sort_index = (
+        data_for_split["date"]
+        .sort_values()
+        .index
+    )
 
     X = X.loc[sort_index]
     y = y.loc[sort_index]
@@ -212,15 +217,17 @@ def train_model(
     )
 
     mse = float(
-        ((predictions - y_valid) ** 2).mean()
+        (
+            (predictions - y_valid) ** 2
+        ).mean()
     )
 
     rmse = mse ** 0.5
 
     mae = float(
-        (predictions - y_valid)
-        .abs()
-        .mean()
+        (
+            predictions - y_valid
+        ).abs().mean()
     )
 
     logger.info("=" * 60)
@@ -274,7 +281,9 @@ if __name__ == "__main__":
         ),
     )
 
-    engine = DataEngine()
+    settings = get_settings()
+
+    engine = DataEngine(settings)
 
     result = train_model(
         engine,
